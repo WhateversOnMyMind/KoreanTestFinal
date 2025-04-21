@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Text Comparison Scorer</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      padding: 20px;
+      background-color: #f2f2f2;
+    }
+    textarea {
+      width: 100%;
+      height: 200px;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+    #score, #mistakes {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+    #mistakes {
+      color: red;
+      white-space: pre-wrap;
+    }
+    #answerText {
+      background-color: #e8e8e8;
+      padding: 10px;
+      margin-top: 30px;
+      border-radius: 5px;
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+<h2>GPA 5.0 ㄱㄱ</h2>
+
+<textarea id="userInput" placeholder="여기에 텍스트를 입력하세요..."></textarea>
+<br>
+<button onclick="compareText()">Check Score</button>
+
+<div id="score"></div>
+<div id="mistakes"></div>
+
+<h3>📜 원문 (정답)</h3>
+<div id="answerText"></div>
+
+<script>
+  const referenceText = `오등은 자에 아 조선의 독립국임과 조선인의 자주민임을 선언하노라. 차로써 세계만방에 고하야 인류평등의 대의를 극명하며, 차로써 자손만대에 고하야 민족자존의 정권을 영유케 하노라. 반만년 역사의 권위를 장하야 차를 선언함이며, 이천만 민중의 성충을 합하야 차를 포명함이며, 민족의 항구여일한 자유발전을 위하야 차를 주장함이며, 인류적 양심의 발로에 기인한 세계개조의 대기운에 순응병진하기 위하야 차를 제기함이니, 시ㅣ 천의 명명이며, 시대의 대세ㅣ며, 전인류 공존동생권의 정당한 발동이라, 천하하물이던지 차를 저지억제치 못할지니라.
+희라, 구래의 억울을 선창하려 하면, 시하의 고통을 파탈하려 하면, 장래의 협위를 삼제하려 하면, 민족적 양심과 국가적 염의의 압축소잔을 흥분신장하려 하면, 각개의 인격의 정당한 발달을 수하려 하면, 가련한 자제에게 고치적 재산을 유여치 안이하려 하면, 자자손손의 영구완전한 경복을 도영하려 하면, 최대급무가 민족적 독립을 확실케 함이니, 이천만 각개가 인마다 방촌의 인을 회하고, 인류통성과 시대양심이 정의의 군과 인도의 간과로써 호원하는 금일, 오인은 진하야 취하매 하강을 좌치 못하랴, 퇴하야 작하매 하지를 전치 못하랴.`;
+
+  function cleanText(text) {
+    return text
+            .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()\n\r]/g, "") // remove punctuation
+            .replace(/\s{2,}/g, " ") // collapse multiple spaces
+            .trim()
+            .split(" ");
+  }
+
+  function compareText() {
+    const userInput = document.getElementById("userInput").value;
+    const refWords = cleanText(referenceText);
+    const userWords = cleanText(userInput);
+
+    let correctCount = 0;
+    let wrongList = [];
+
+    for (let i = 0; i < refWords.length; i++) {
+      if (userWords[i] === refWords[i]) {
+        correctCount++;
+      } else {
+        const wrongWord = userWords[i] || "(빈칸)";
+        wrongList.push(`❌ ${wrongWord} → ${refWords[i]}`);
+      }
+    }
+
+    const score = ((correctCount / refWords.length) * 100).toFixed(2);
+    document.getElementById("score").innerHTML = `✅ Score: ${score}% (${correctCount} / ${refWords.length} 단어)`;
+    document.getElementById("mistakes").innerText = wrongList.join('\n');
+    document.getElementById("answerText").innerText = referenceText;
+  }
+</script>
+
+</body>
+</html>
